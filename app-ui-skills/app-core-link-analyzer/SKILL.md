@@ -99,6 +99,26 @@ description: 从 App 安装包、小程序、真机界面或原型中取真实�
 | 序号 | 操作 | 对象与标识（设备 / 账号 / 车辆） | 操作前状态 | 操作后状态 | 恢复动作 | 结果 |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 
+## 脚本
+
+`scripts/` 下有可复用的辅助脚本，动手前先看有没有能省掉手工操作的：
+
+| 脚本 | 用途 |
+| :--- | :--- |
+| `scripts/device_baseline.py` | 采集 / 核对设备基线（包版本、前台窗口、代理、语言、时区、已授予权限）。`snapshot` 采一次存 JSON，分析结束用 `compare` 比对、`restore --proxy` 写回代理。adb 调用统一带 `-s`。 |
+| `scripts/capture_ui.py` | 抓当前屏控件树与可见文案，输出 `ui.xml` / `texts.txt` / `summary.md`，是「抄这一屏真实有什么」的标准动作。原生控件与 WebView 元素分开标注，避免误判 resource-id 前缀。 |
+| `scripts/parse_links.py` | 把本步产出的链路清单解析回结构化数据（编号、名称、类型、触发条件、角色、节点串、主/分支、来源依据），节点按圈号 ①②③ 切分。写完拿它自查一遍：缺节点、缺来源依据会直接点名，避免下游誊抄漏字段。 |
+| `scripts/mdutil.py` | Markdown 通用读写工具库（表格解析、章节替换、代码块提取、标题统计），其他脚本共用，也可直接 import。 |
+
+用法示例：
+
+```bash
+python scripts/device_baseline.py snapshot --udid <udid> --package <pkg> --json base.json
+python scripts/device_baseline.py compare --before base.json
+python scripts/capture_ui.py --udid <udid> --out out/ui_01
+python scripts/parse_links.py ../../test-design/app/01-核心链路清单.md --json links.json
+```
+
 ## 禁止
 
 - 不在没取到实际界面的情况下分析：只有 App 名称、只有应用商店介绍页、只有模块名时，先按「取数」取回内容；取不到就索取录屏或截图并停下。靠命名猜功能即为编造。

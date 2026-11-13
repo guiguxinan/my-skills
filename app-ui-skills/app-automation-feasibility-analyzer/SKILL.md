@@ -67,6 +67,22 @@ description: 对 App UI 测试用例逐条评估自动化 ROI，分池为「可�
 
 ### 四、假设与待确认
 
+## 脚本
+
+`scripts/` 下的辅助脚本，用于打分核算与分池校验：
+
+| 脚本 | 用途 |
+| :--- | :--- |
+| `scripts/score_cases.py` | 五维打分与分池核算。`--template` 生成打分 CSV 模板（按上游用例编号预填），填完用 `--csv` 算汇总表草稿；对本步产物用 `--verify` 核对「可自动化 / 有条件 / 手工」三张表与「三、汇总」的数字是否自洽、分池区间有无越界。 |
+| `scripts/mdutil.py` | Markdown 通用读写工具库（表格解析、章节替换、代码块提取、标题统计）。 |
+
+用法示例：
+
+```bash
+python scripts/score_cases.py ../../test-design/app/03-测试用例.md --template scores.csv
+python scripts/score_cases.py ../../test-design/app/04-自动化选型.md --verify
+```
+
 ## 禁止
 
 - 不给逐条打分的空转结论：每条必须有总分、判定依据、可执行的下一步。

@@ -65,6 +65,23 @@ description: 依据核心链路清单、页面原型或业务描述推导 UI 测
 | 编号 | 待确认项 | 缺失影响 | 建议补充材料 |
 | :--- | :--- | :--- | :--- |
 
+## 脚本
+
+`scripts/` 下的辅助脚本，用于解析上游链路清单与自查覆盖情况：
+
+| 脚本 | 用途 |
+| :--- | :--- |
+| `scripts/parse_links.py` | 把上游 01 文件的链路小节解析成结构化 JSON（编号、名称、类型、触发条件、角色、节点串、主/分支、来源依据），节点按圈号 ①②③ 切分。避免人工誊抄漏字段。 |
+| `scripts/coverage_check.py` | 自查测试点清单：每条 TP 是否挂了链路 ID 与节点、是否带六类标签；`--table` 直接生成「覆盖自查」表骨架。标签体系不同时用 `--categories` 指定。 |
+| `scripts/mdutil.py` | Markdown 通用读写工具库（表格解析、章节替换、代码块提取、标题统计）。 |
+
+用法示例：
+
+```bash
+python scripts/parse_links.py ../../test-design/web/01-核心链路清单.md --json links.json
+python scripts/coverage_check.py ../../test-design/web/02-测试点清单.md --table
+```
+
 ## 禁止
 
 - 不写执行步骤与预期结果，测试点只描述「验证什么」，落到操作是 `web-test-case-writer` 的职责。

@@ -71,6 +71,23 @@ description: 依据可自动化的 App 用例清单或用例表编写可运行�
 
 缺的控件标识、需要补的测试账号与测试车辆、设备池缺口、需要 mock 的系统能力，逐条说明需要谁提供什么。
 
+## 脚本
+
+`scripts/` 下的辅助脚本，用于生成映射表与自检脚本文档：
+
+| 脚本 | 用途 |
+| :--- | :--- |
+| `scripts/gen_mapping.py` | 从上游可自动化清单生成「二、用例映射表」整表（按 JSON 配置分派文件 / 页面对象方法 / 设备矩阵 / 状态），替换目标文档里那张表的数据行。避免手写 200 行时漏号、重号、状态写错。列名与模块前缀规则随项目不同，在配置里用 `columns` / `module_regex` 指定。 |
+| `scripts/check_script_doc.py` | 自检本文档：无 `sleep`、无裸 `assert`、无下标 / 坐标定位、无硬编码凭据；每个测试函数都有断言、都能追溯到用例编号；带 `--repo` 时还会扫描目标仓库，校验代码里引用的页面对象方法 / 属性真实存在。App 栈用 `--profile app`（另可用 `web` / `api` 档位）。 |
+| `scripts/mdutil.py` | Markdown 通用读写工具库（表格解析、章节替换、代码块提取、标题统计）。 |
+
+用法示例：
+
+```bash
+python scripts/gen_mapping.py --from ../../test-design/app/04-自动化选型.md         --to ../../test-design/app/05-自动化脚本.md --config mapping.json
+python scripts/check_script_doc.py ../../test-design/app/05-自动化脚本.md --repo <仓库根>
+```
+
 ## 禁止
 
 - 不编造控件 id、文案、包名、启动页；缺就占位并标记跳过。

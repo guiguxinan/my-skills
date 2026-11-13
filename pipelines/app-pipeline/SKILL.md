@@ -20,6 +20,26 @@ argument-hint: <安装包路径 / 小程序码 / 截图路径> [输出目录] [�
 | 4 | `app-automation-feasibility-analyzer` | `04-自动化选型.md` | 03 |
 | 5 | `app-automation-script-generator` | `05-自动化脚本.md` | 04 |
 
+## 脚本
+
+`scripts/` 下的辅助脚本，管线上每一步都会用到：
+
+| 脚本 | 用途 |
+| :--- | :--- |
+| `scripts/carry_forward.py` | 把上游文档里的「假设与待确认」原样搬进下一份文档（默认取最后一个待确认节，内嵌标题降一级），并避免重复搬运。流水线规则要求累计不删改，这个脚本是搬运动作的标准做法。 |
+| `scripts/pipeline_summary.py` | 收尾时直接从各步产物里数出节数与未决待确认项数，生成「步 / 文件路径 / 节数 / 未决待确认项数 / 建议下一步」汇总表。 |
+| `scripts/mdutil.py` | Markdown 通用读写工具库（表格解析、章节替换、代码块提取、标题统计）。 |
+
+用法示例：
+
+```bash
+# 每步产物写完后搬运上一步的假设
+python scripts/carry_forward.py --from ../04-自动化选型.md --to ../05-自动化脚本.md
+
+# 全流程结束后出汇总表
+python scripts/pipeline_summary.py ../../test-design/app --out summary.md
+```
+
 ## 规则
 
 - 每步只按该步的 Skill 规则产出，不把下一步的判断（优先级分池、脚本结论）提前塞进这一步。

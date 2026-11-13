@@ -72,6 +72,24 @@ description: 依据可自动化的接口用例清单或用例表编写可运行�
 
 缺的接口路径与字段、契约文件、测试账号、需要 mock 的外部依赖，逐条说明需要谁提供什么。
 
+## 脚本
+
+`scripts/` 下的辅助脚本，用于生成映射表与自检脚本文档：
+
+| 脚本 | 用途 |
+| :--- | :--- |
+| `scripts/gen_mapping.py` | 从上游可自动化清单生成「二、用例映射表」整表（按 JSON 配置分派文件 / 函数或请求项 / 状态），替换目标文档里那张表的数据行。避免手写上百行时漏号、重号、状态写错。列名与模块前缀规则随项目不同，在配置里用 `columns` / `module_regex` 指定。 |
+| `scripts/check_script_doc.py` | 自检本文档：无 `sleep`、无硬编码凭据与 token；每个测试函数都有断言、都能追溯到用例编号；带 `--repo` 时还会扫描目标仓库，校验代码里引用的 client / fixture 方法与属性真实存在。接口栈用 `--profile api`（允许原生 assert，不查 UI 专属目录）。 |
+| `scripts/mdutil.py` | Markdown 通用读写工具库（表格解析、章节替换、代码块提取、标题统计）。 |
+
+用法示例：
+
+```bash
+python scripts/gen_mapping.py --from ../../test-design/api/04-自动化选型.md \
+    --to ../../test-design/api/05-自动化脚本.md --config mapping.json
+python scripts/check_script_doc.py ../../test-design/api/05-自动化脚本.md --repo <仓库根> --profile api
+```
+
 ## 禁止
 
 - 不编造 path、入参字段、返回字段、业务码；缺就占位并标记跳过。

@@ -66,6 +66,23 @@ description: 依据接口链路清单、接口文档或业务描述推导接口�
 | 编号 | 待确认项 | 缺失影响 | 建议补充材料 |
 | :--- | :--- | :--- | :--- |
 
+## 脚本
+
+`scripts/` 下的辅助脚本，用于解析上游链路清单与自查覆盖情况：
+
+| 脚本 | 用途 |
+| :--- | :--- |
+| `scripts/parse_links.py` | 把上游 01 文件的链路小节解析成结构化 JSON（编号、名称、触发条件、角色、鉴权方式、节点串、数据依赖、幂等与状态、来源依据），节点按圈号 ①②③ 切分。避免人工誊抄漏字段。 |
+| `scripts/coverage_check.py` | 自查测试点清单：每条 TP 是否挂了链路 ID 与节点、是否带六类标签；`--table` 直接生成「覆盖自查」表骨架。接口档位标签用 `--preset api`（正向/参数/状态/幂等并发/鉴权/契约），与文档里的长写法（状态与规则、幂等与并发、鉴权与权限、契约与容错）等价。 |
+| `scripts/mdutil.py` | Markdown 通用读写工具库（表格解析、章节替换、代码块提取、标题统计）。 |
+
+用法示例：
+
+```bash
+python scripts/parse_links.py ../../test-design/api/01-核心链路清单.md --json links.json
+python scripts/coverage_check.py ../../test-design/api/02-测试点清单.md --preset api --table
+```
+
 ## 禁止
 
 - 不写执行步骤与预期结果，测试点只描述「验证什么」，落到请求是 `api-test-case-writer` 的职责。
